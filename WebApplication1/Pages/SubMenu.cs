@@ -15,7 +15,7 @@ namespace WebApplication1.Pages
 
                 registration.AppendLine("Main Menu");
 
-                registration.AppendLine("1. Parking Slot");                
+                registration.AppendLine("1. Parking Slots");                
 
                 return registration.ToString();
             }

@@ -3,10 +3,10 @@ using System.Net;
 using System.Text;
 using System;
 using System.Web.Http;
-using WebApplication1.Models;
 using System.Threading.Tasks;
 using WebApplication1.Pages;
 using System.Linq;
+using WebApplication1.DTOs;
 
 namespace WebApplication1.Controllers
 {
@@ -18,9 +18,12 @@ namespace WebApplication1.Controllers
         // specify the actual route, your url will look like... localhost:8080/api/mobile/ussd...
         [HttpPost]
         // state that the method you intend to create is a POST
-        public async Task<HttpResponseMessage> Home([FromBody] ServerResponse serverResponse)
+        public HttpResponseMessage Home([FromBody] ServerResponse serverResponse)
         {
             // declare a complex type as input parameter
+
+            BookingDTO bookingDTO = new BookingDTO();
+
             HttpResponseMessage rs;
 
             string response;
@@ -52,6 +55,68 @@ namespace WebApplication1.Controllers
                 string[] splitString = serverResponse.Text.Split('*');
 
                 int step = splitString.Count();
+
+                if (step == 2)
+                {
+                    response = ParkingSlots.GetSlots();
+
+                    rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                    rs.Content = new StringContent(response, Encoding.UTF8, "text/plain");
+
+                    return rs;
+                }
+
+                if (step == 3)
+                {
+                    response = Inputs.EnterName();
+
+                    rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                    rs.Content = new StringContent(response, Encoding.UTF8, "text/plain");
+
+                    return rs;
+                }
+
+                if (step == 4)
+                {
+                    response = Inputs.EnterPhoneNo();
+
+                    rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                    rs.Content = new StringContent(response, Encoding.UTF8, "text/plain");
+
+                    return rs;
+                }
+
+                if (step == 5)
+                {
+                    response = Inputs.EnterCareRegNo();
+
+                    rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                    rs.Content = new StringContent(response, Encoding.UTF8, "text/plain");
+
+                    return rs;
+                }
+
+                if (step == 6)
+                {
+                    bookingDTO.CustomerName = splitString[1];
+
+                    bookingDTO.PhoneNumber = splitString[2];
+
+                    response = SlotBooking.Create(bookingDTO);
+
+                    rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                    rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                    rs.Content = new StringContent(response, Encoding.UTF8, "text/plain");
+
+                    return rs;
+                }
+
             }
 
 
@@ -61,7 +126,7 @@ namespace WebApplication1.Controllers
             {
                 // always include a 'CON' in your first statements
                 response = "CON This is AfricasTalking \n";
-                                response += "1. Get your phone number";
+                response += "1. Get your phone number";
             }
             else if (serverResponse.Text.Equals("1", StringComparison.Ordinal))
             {
