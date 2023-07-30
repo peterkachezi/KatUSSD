@@ -7,9 +7,9 @@ namespace WebApplication1.Models
 {
     public class ServerResponse
     {
-        public string text { get; set; }
-        public string phoneNumber { get; set; }
-        public string sessionId { get; set; }
-        public string serviceCode { get; set; }
+        public string Text { get; set; }
+        public string PhoneNumber { get; set; }
+        public string SessionId { get; set; }
+        public string ServiceCode { get; set; }
     }
 }

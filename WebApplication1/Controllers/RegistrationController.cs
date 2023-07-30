@@ -5,6 +5,8 @@ using System;
 using System.Web.Http;
 using WebApplication1.Models;
 using System.Threading.Tasks;
+using WebApplication1.Pages;
+using System.Linq;
 
 namespace WebApplication1.Controllers
 {
@@ -20,22 +22,50 @@ namespace WebApplication1.Controllers
         {
             // declare a complex type as input parameter
             HttpResponseMessage rs;
+
             string response;
-            if (serverResponse.text == null)
+
+            if (serverResponse.Text == null)
             {
-                serverResponse.text = "";
+                response = WelcomePage.GetMenu();
+
+                rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                rs.Content = new StringContent(response, Encoding.UTF8, "text/plain");
+
+                return rs;
             }
 
+            if (serverResponse.Text.StartsWith("1"))
+            {
+                if (serverResponse.Text.Equals("1", StringComparison.Ordinal))
+                {
+                    response = SubMenu.GetMenu();
+
+                    rs = Request.CreateResponse(HttpStatusCode.Created, response);
+
+                    rs.Content = new StringContent(response, Encoding.UTF8, "text/plain");
+
+                    return rs;
+                }
+
+                string[] splitString = serverResponse.Text.Split('*');
+
+                int step = splitString.Count();
+            }
+
+
+
             // loop through the server's text value to determine the next cause of action
-            if (serverResponse.text.Equals("", StringComparison.Ordinal))
+            if (serverResponse.Text.Equals("", StringComparison.Ordinal))
             {
                 // always include a 'CON' in your first statements
                 response = "CON This is AfricasTalking \n";
                                 response += "1. Get your phone number";
             }
-            else if (serverResponse.text.Equals("1", StringComparison.Ordinal))
+            else if (serverResponse.Text.Equals("1", StringComparison.Ordinal))
             {
-                response = "END Your phone number is " + serverResponse.phoneNumber;
+                response = "END Your phone number is " + serverResponse.PhoneNumber;
 
                 //the last response starts with an 'END' so that the server understands that it's the final response
             }
